@@ -1,0 +1,143 @@
+/* Education Section Styles */
+.education-section {
+  padding: 6rem 2rem;
+  background: #090909;
+}
+
+.education-timeline {
+  max-width: 900px;
+  margin: 3rem auto 0;
+  position: relative;
+}
+
+.education-timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+.education-card {
+  position: relative;
+  margin-bottom: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.education-card:nth-child(even) {
+  direction: rtl;
+}
+
+.education-card:nth-child(even) .card-content {
+  direction: ltr;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border: 4px solid #090909;
+  border-radius: 50%;
+  top: 2rem;
+  z-index: 10;
+}
+
+.card-content {
+  background: var(--surface);
+  padding: 2rem;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.card-content:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 20px 40px var(--shadow);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.card-header h3 {
+  font-size: 1.4rem;
+  color: var(--text);
+  margin: 0;
+  flex: 1;
+}
+
+.year {
+  background: var(--accent);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.field {
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.institution {
+  color: var(--text-muted);
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.percentage {
+  color: var(--accent-alt);
+  font-weight: 600;
+  margin: 1rem 0 0 0;
+}
+
+@media (max-width: 768px) {
+  .education-section {
+    padding: 4rem 1.5rem;
+  }
+
+  .education-timeline::before {
+    left: 15px;
+  }
+
+  .education-card {
+    grid-template-columns: 1fr;
+    margin-left: 60px;
+  }
+
+  .education-card:nth-child(even) {
+    direction: ltr;
+  }
+
+  .timeline-marker {
+    left: 0;
+    transform: translateX(-75%);
+  }
+
+  .card-header {
+    flex-direction: column;
+  }
+
+  .year {
+    width: 100%;
+    text-align: center;
+  }
+}

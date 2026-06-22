@@ -1,0 +1,35 @@
+/* Main App Container */
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure all sections take full width */
+main, section {
+  width: 100%;
+}
+
+/* Smooth transitions between sections */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Remove default margins and padding from body */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Accessibility Focus Styles */
+*:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
