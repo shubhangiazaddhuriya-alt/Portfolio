@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaCode } from 'react-icons/fa';
+import '../styles/Contact.css';
 
 const SocialIcons = () => {
   const socialLinks = [
@@ -22,7 +23,7 @@ const SocialIcons = () => {
   ];
 
   return (
-    <div className="flex gap-4 justify-center">
+    <div className="social-icons">
       {socialLinks.map((social, index) => {
         const Icon = social.icon;
         return (
@@ -35,14 +36,14 @@ const SocialIcons = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1, duration: 0.3 }}
             whileHover={{ 
-              scale: 1.2, 
+              scale: 1.1, 
               rotate: 5,
             }}
             whileTap={{ scale: 0.95 }}
-            className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="social-icon"
             aria-label={`Visit ${social.name} profile`}
           >
-            <Icon className="text-xl" />
+            <Icon />
           </motion.a>
         );
       })}
