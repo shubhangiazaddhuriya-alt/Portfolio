@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion } from 'framer-motion';
-import { FaSpinner } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaSpinner, FaUser, FaEnvelope, FaPaperPlane, FaComment, FaCheck, FaTimes } from 'react-icons/fa';
+import '../styles/Contact.css';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -14,14 +15,16 @@ const contactSchema = z.object({
 
 const ContactForm = ({ onSubmit }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [messageLength, setMessageLength] = useState(0);
   
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, touchedFields },
     reset,
   } = useForm({
     resolver: zodResolver(contactSchema),
+    mode: 'onChange',
   });
 
   const onFormSubmit = async (data) => {
@@ -30,6 +33,7 @@ const ContactForm = ({ onSubmit }) => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       await onSubmit(data);
       reset();
+      setMessageLength(0);
     } catch (error) {
       console.error('Form submission error:', error);
     } finally {
@@ -37,8 +41,11 @@ const ContactForm = ({ onSubmit }) => {
     }
   };
 
-  const inputClasses = "w-full px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-white placeholder:text-gray-500 transition-all duration-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/30 outline-none";
-  const errorClasses = "text-red-400 text-sm mt-1";
+  const fields = [
+    { name: 'name', label: 'Full Name', placeholder: 'Your Name ', icon: FaUser },
+    { name: 'email', label: 'Email Address', placeholder: '@gmail.com', icon: FaEnvelope },
+    { name: 'subject', label: 'Subject', placeholder: 'Project Inquiry', icon: FaPaperPlane },
+  ];
 
   return (
     <motion.div
@@ -46,108 +53,136 @@ const ContactForm = ({ onSubmit }) => {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-8"
+      className="contact-card"
     >
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-            Full Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            {...register('name')}
-            placeholder="John Doe"
-            className={inputClasses}
-            disabled={isSubmitting}
-            aria-invalid={errors.name ? 'true' : 'false'}
-            aria-describedby={errors.name ? 'name-error' : undefined}
-          />
-          {errors.name && (
-            <p id="name-error" className={errorClasses} role="alert">
-              {errors.name.message}
-            </p>
-          )}
-        </div>
+      <form onSubmit={handleSubmit(onFormSubmit)} className="contact-form">
+        {fields.map((field) => {
+          const Icon = field.icon;
+          return (
+            <div key={field.name} className="form-group">
+              <label htmlFor={field.name} className="form-label">
+                {field.label}
+              </label>
+              <Icon className="form-icon" />
+              <input
+                id={field.name}
+                type={field.name === 'email' ? 'email' : 'text'}
+                {...register(field.name)}
+                placeholder={field.placeholder}
+                className="form-input"
+                disabled={isSubmitting}
+                aria-invalid={errors[field.name] ? 'true' : 'false'}
+                aria-describedby={errors[field.name] ? `${field.name}-error` : undefined}
+              />
+              <AnimatePresence>
+                {errors[field.name] && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    id={`${field.name}-error`}
+                    className="form-error"
+                    role="alert"
+                  >
+                    <FaTimes className="text-xs" />
+                    {errors[field.name].message}
+                  </motion.p>
+                )}
+                {touchedFields[field.name] && !errors[field.name] && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="form-success"
+                  >
+                    <FaCheck className="text-xs" />
+                    Looks good!
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-            Email Address
-          </label>
-          <input
-            id="email"
-            type="email"
-            {...register('email')}
-            placeholder="john@example.com"
-            className={inputClasses}
-            disabled={isSubmitting}
-            aria-invalid={errors.email ? 'true' : 'false'}
-            aria-describedby={errors.email ? 'email-error' : undefined}
-          />
-          {errors.email && (
-            <p id="email-error" className={errorClasses} role="alert">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-            Subject
-          </label>
-          <input
-            id="subject"
-            type="text"
-            {...register('subject')}
-            placeholder="Project Inquiry"
-            className={inputClasses}
-            disabled={isSubmitting}
-            aria-invalid={errors.subject ? 'true' : 'false'}
-            aria-describedby={errors.subject ? 'subject-error' : undefined}
-          />
-          {errors.subject && (
-            <p id="subject-error" className={errorClasses} role="alert">
-              {errors.subject.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+        <div className="form-group">
+          <label htmlFor="message" className="form-label">
             Message
           </label>
+          <FaComment className="form-icon" />
           <textarea
             id="message"
-            {...register('message')}
+            {...register('message', {
+              onChange: (e) => setMessageLength(e.target.value.length),
+            })}
             placeholder="Tell me about your project..."
-            rows={5}
-            className={`${inputClasses} h-40 resize-none rounded-xl`}
+            className="form-textarea"
             disabled={isSubmitting}
             aria-invalid={errors.message ? 'true' : 'false'}
             aria-describedby={errors.message ? 'message-error' : undefined}
           />
-          {errors.message && (
-            <p id="message-error" className={errorClasses} role="alert">
-              {errors.message.message}
-            </p>
-          )}
+          <div className="flex justify-between items-center">
+            <AnimatePresence>
+              {errors.message && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  id="message-error"
+                  className="form-error"
+                  role="alert"
+                >
+                  <FaTimes className="text-xs" />
+                  {errors.message.message}
+                </motion.p>
+              )}
+              {touchedFields.message && !errors.message && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="form-success"
+                >
+                  <FaCheck className="text-xs" />
+                  Looks good!
+                </motion.p>
+              )}
+            </AnimatePresence>
+            <span className={`char-counter ${messageLength >= 15 ? 'valid' : ''}`}>
+              {messageLength}/500
+            </span>
+          </div>
         </div>
 
         <motion.button
           type="submit"
           disabled={isSubmitting}
-          whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
-          whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
-          className="w-full h-[52px] bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white rounded-xl font-semibold text-lg transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+          whileHover={{ scale: isSubmitting ? 1 : 1.02, y: isSubmitting ? 0 : -2 }}
+          whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+          className="btn btn-primary w-full"
         >
-          {isSubmitting ? (
-            <>
-              <FaSpinner className="animate-spin" />
-              Sending...
-            </>
-          ) : (
-            'Send Message →'
-          )}
+          <AnimatePresence mode="wait">
+            {isSubmitting ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-2"
+              >
+                <FaSpinner className="animate-spin" />
+                Sending...
+              </motion.div>
+            ) : (
+              <motion.div
+                key="submit"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-2"
+              >
+                Send Message
+                <FaPaperPlane />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.button>
       </form>
     </motion.div>

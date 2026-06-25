@@ -5,6 +5,7 @@ import ContactInfoCard from './ContactInfoCard';
 import AvailabilityCard from './AvailabilityCard';
 import SocialIcons from './SocialIcons';
 import Toast from './Toast';
+import '../styles/Contact.css';
 
 const Contact = () => {
   const [toast, setToast] = useState({
@@ -32,7 +33,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="py-28 px-6 lg:px-8 min-h-screen relative overflow-hidden" id="contact">
+    <section className="contact-section" id="contact">
       <Toast
         message={toast.message}
         type={toast.type}
@@ -40,31 +41,29 @@ const Contact = () => {
         onClose={() => setToast({ ...toast, show: false })}
       />
       
-      <div className="max-w-7xl mx-auto">
+      <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="section-header"
         >
-          <h2 className="text-6xl font-bold bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent mb-6">
-            Get In Touch
-          </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+          <h2 className="section-title">Get In Touch</h2>
+          <p className="section-description">
             Have a project in mind or want to discuss an opportunity? I'm currently open to internships, 
             freelance projects, and full-time frontend developer roles. Let's build something amazing together.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
-          {/* Left Column - Contact Form (60%) */}
-          <div className="lg:col-span-3">
+        <div className="contact-grid">
+          {/* Left Column - Contact Form */}
+          <div className="contact-form-wrapper">
             <ContactForm onSubmit={handleFormSubmit} />
           </div>
 
-          {/* Right Column - Contact Information (40%) */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Right Column - Contact Information */}
+          <div className="contact-info-wrapper">
             <ContactInfoCard />
             <AvailabilityCard />
             
@@ -74,13 +73,13 @@ const Contact = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="space-y-3"
+              className="quick-actions"
             >
               <motion.button
                 onClick={downloadResume}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                className="btn btn-primary w-full"
               >
                 Download Resume
               </motion.button>
